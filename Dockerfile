@@ -16,11 +16,11 @@ RUN		apt-get install -y  \
 RUN		apt-get install -y \
 			git
 
-COPY		CMakeLists.txt /app/src/
-COPY		server/ /app/src/server/
+COPY		CMakeLists.txt /app/
+COPY		src/ /app/src/
 WORKDIR	    	/app/
 
-RUN		mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release ../src/ ; \
+RUN		mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release ../ ; \
 		cd - && \
 		cmake --build build/ --target zappy -- -j 4
 
