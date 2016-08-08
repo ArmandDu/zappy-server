@@ -14,6 +14,14 @@ namespace zappy {
     };
 
 
+    TEST_F(IncantationTest, test_initial_values_of_player) {
+        Game game = Game(0, Rect(1, 1, 0, 0), std::vector<std::string>(), 1);
+        my_tcp::Client client;
+        Player player = Player(client.getSession(), game.getWorld().getSize(), Point(), Player::Orientation::East);
+        ASSERT_EQ(player.getLevel(), 1);
+        ASSERT_FALSE(player.isIncanting());
+    }
+
     TEST_F(IncantationTest, test_incantation_with_more_than_enough_requirement_pass_level_2) {
         IncantationAction action;
         Game game = Game(0, Rect(1, 1, 0, 0), std::vector<std::string>(), 1);
