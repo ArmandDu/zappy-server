@@ -229,7 +229,9 @@ namespace zappy {
         int dx = std::min(x0, size_.width - x0);
         int dy = std::min(y0, size_.height - y0);
         int angle = (std::atan2(dy, dx)) * zappyAngle;
-        return 1 + (std::abs(angle - angleMatrix.at(getOrientation()))) % 8;
+        auto diff = angle - angleMatrix.at(getOrientation());
+        auto res = 1 + (std::max(diff, 8 - diff)) % 8;
+        return res;
     }
 
 

@@ -19,6 +19,7 @@ namespace zappy {
         Point pos_0_0 = Point(0, 0);
         Point pos_2_2 = Point(2, 2);
         Point pos_2_3 = Point(2, 3);
+        Point pos_3_2 = Point(3, 2);
         Point pos_0_4 = Point(0, 4);
         Point pos_4_0 = Point(4, 0);
 
@@ -119,7 +120,7 @@ namespace zappy {
     TEST_F(PlayerTest, player_forward_east_test_move_in_x_axis) {
         Player player(client.getSession(), size, pos_2_2, east);
         player.forward();
-        ASSERT_EQ(Point(3, 2), player.getPosition());
+        ASSERT_EQ(pos_3_2, player.getPosition());
         ASSERT_EQ(east, player.getOrientation());
     }
     TEST_F(PlayerTest, player_forward_west_test_move_in_x_axis_using_modulo) {

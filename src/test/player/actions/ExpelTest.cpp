@@ -22,14 +22,14 @@ namespace zappy {
 
         virtual void SetUp() {
             worldSize = Rect(10, 10, 0, 0);
-            pos_0_0 = Point(5, 5);
+            pos_5_5 = Point(5, 5);
 
 
             game = new Game(0, worldSize, std::vector<std::string>(), 1);
-            playerNorth = new Player(client_north.getSession(), game->getWorld().getSize(), pos_0_0, Player::Orientation::North);
-            playerEast = new Player(client_east.getSession(), game->getWorld().getSize(), pos_0_0, Player::Orientation::East);
-            playerSouth = new Player(client_south.getSession(), game->getWorld().getSize(), pos_0_0, Player::Orientation::South);
-            playerWest = new Player(client_west.getSession(), game->getWorld().getSize(), pos_0_0, Player::Orientation::West);
+            playerNorth = new Player(client_north.getSession(), game->getWorld().getSize(), pos_5_5, Player::Orientation::North);
+            playerEast = new Player(client_east.getSession(), game->getWorld().getSize(), pos_5_5, Player::Orientation::East);
+            playerSouth = new Player(client_south.getSession(), game->getWorld().getSize(), pos_5_5, Player::Orientation::South);
+            playerWest = new Player(client_west.getSession(), game->getWorld().getSize(), pos_5_5, Player::Orientation::West);
             game->addPlayer(*playerNorth);
             game->addPlayer(*playerEast);
             game->addPlayer(*playerSouth);
@@ -38,7 +38,7 @@ namespace zappy {
         }
 
         Rect worldSize;
-        Point pos_0_0;
+        Point pos_5_5;
         Game *game;
         Player *playerNorth;
         Player *playerEast;
@@ -62,7 +62,7 @@ namespace zappy {
         auto expected = "deplacement: 5";
 
         my_tcp::Client client;
-        Player expulsor(client.getSession(), worldSize, pos_0_0, expulsorOrientation);
+        Player expulsor(client.getSession(), worldSize, pos_5_5, expulsorOrientation);
 
         action.trigger(expulsor, "", "", *game);
         ASSERT_TRUE(expulsor.isBusy()); while (expulsor.isBusy()) expulsor.updateCmdTimeout(duration);
@@ -79,7 +79,7 @@ namespace zappy {
         auto expected = "deplacement: 7";
 
         my_tcp::Client client;
-        Player expulsor(client.getSession(), worldSize, pos_0_0, expulsorOrientation);
+        Player expulsor(client.getSession(), worldSize, pos_5_5, expulsorOrientation);
 
         action.trigger(expulsor, "", "", *game);
         ASSERT_TRUE(expulsor.isBusy()); while (expulsor.isBusy()) expulsor.updateCmdTimeout(duration);
@@ -96,7 +96,7 @@ namespace zappy {
         auto expected = "deplacement: 1";
 
         my_tcp::Client client;
-        Player expulsor(client.getSession(), worldSize, pos_0_0, expulsorOrientation);
+        Player expulsor(client.getSession(), worldSize, pos_5_5, expulsorOrientation);
 
         action.trigger(expulsor, "", "", *game);
         ASSERT_TRUE(expulsor.isBusy()); while (expulsor.isBusy()) expulsor.updateCmdTimeout(duration);
@@ -113,7 +113,7 @@ namespace zappy {
         auto expected = "deplacement: 3";
 
         my_tcp::Client client;
-        Player expulsor(client.getSession(), worldSize, pos_0_0, expulsorOrientation);
+        Player expulsor(client.getSession(), worldSize, pos_5_5, expulsorOrientation);
 
         action.trigger(expulsor, "", "", *game);
         ASSERT_TRUE(expulsor.isBusy()); while (expulsor.isBusy()) expulsor.updateCmdTimeout(duration);
@@ -132,7 +132,7 @@ namespace zappy {
         auto expected = "deplacement: 3";
 
         my_tcp::Client client;
-        Player expulsor(client.getSession(), worldSize, pos_0_0, expulsorOrientation);
+        Player expulsor(client.getSession(), worldSize, pos_5_5, expulsorOrientation);
 
         action.trigger(expulsor, "", "", *game);
         ASSERT_TRUE(expulsor.isBusy()); while (expulsor.isBusy()) expulsor.updateCmdTimeout(duration);
@@ -149,7 +149,7 @@ namespace zappy {
         auto expected = "deplacement: 5";
 
         my_tcp::Client client;
-        Player expulsor(client.getSession(), worldSize, pos_0_0, expulsorOrientation);
+        Player expulsor(client.getSession(), worldSize, pos_5_5, expulsorOrientation);
 
         action.trigger(expulsor, "", "", *game);
         ASSERT_TRUE(expulsor.isBusy()); while (expulsor.isBusy()) expulsor.updateCmdTimeout(duration);
@@ -166,14 +166,16 @@ namespace zappy {
         auto expected = "deplacement: 7";
 
         my_tcp::Client client;
-        Player expulsor(client.getSession(), worldSize, pos_0_0, expulsorOrientation);
+        Player expulsor(client.getSession(), worldSize, pos_5_5, expulsorOrientation);
 
         action.trigger(expulsor, "", "", *game);
         ASSERT_TRUE(expulsor.isBusy()); while (expulsor.isBusy()) expulsor.updateCmdTimeout(duration);
         ASSERT_EQ(expulsor.getSession().getClient().getOutBuffer().front(), "ok");
-        std::string message = std::find_if(game->getPlayers().begin(), game->getPlayers().end(), [playerOrientation](Player &p) {
+        Player expulsed = *std::find_if(game->getPlayers().begin(), game->getPlayers().end(), [playerOrientation](Player &p) {
             return p.getOrientation() == playerOrientation;
-        })->getSession().getClient().getOutBuffer().front();
+        });
+        std::string message = expulsed.getSession().getClient().getOutBuffer().front();
+        ASSERT_EQ(expulsed.getPosition() - expulsor.getPosition(), Point(1, 0));
         ASSERT_EQ(message, expected);
     }
 
@@ -183,7 +185,7 @@ namespace zappy {
         auto expected = "deplacement: 1";
 
         my_tcp::Client client;
-        Player expulsor(client.getSession(), worldSize, pos_0_0, expulsorOrientation);
+        Player expulsor(client.getSession(), worldSize, pos_5_5, expulsorOrientation);
 
         action.trigger(expulsor, "", "", *game);
         ASSERT_TRUE(expulsor.isBusy()); while (expulsor.isBusy()) expulsor.updateCmdTimeout(duration);
@@ -202,7 +204,7 @@ namespace zappy {
         auto expected = "deplacement: 1";
 
         my_tcp::Client client;
-        Player expulsor(client.getSession(), worldSize, pos_0_0, expulsorOrientation);
+        Player expulsor(client.getSession(), worldSize, pos_5_5, expulsorOrientation);
 
         action.trigger(expulsor, "", "", *game);
         ASSERT_TRUE(expulsor.isBusy()); while (expulsor.isBusy()) expulsor.updateCmdTimeout(duration);
@@ -219,7 +221,7 @@ namespace zappy {
         auto expected = "deplacement: 3";
 
         my_tcp::Client client;
-        Player expulsor(client.getSession(), worldSize, pos_0_0, expulsorOrientation);
+        Player expulsor(client.getSession(), worldSize, pos_5_5, expulsorOrientation);
 
         action.trigger(expulsor, "", "", *game);
         ASSERT_TRUE(expulsor.isBusy()); while (expulsor.isBusy()) expulsor.updateCmdTimeout(duration);
@@ -236,7 +238,7 @@ namespace zappy {
         auto expected = "deplacement: 5";
 
         my_tcp::Client client;
-        Player expulsor(client.getSession(), worldSize, pos_0_0, expulsorOrientation);
+        Player expulsor(client.getSession(), worldSize, pos_5_5, expulsorOrientation);
 
         action.trigger(expulsor, "", "", *game);
         ASSERT_TRUE(expulsor.isBusy()); while (expulsor.isBusy()) expulsor.updateCmdTimeout(duration);
@@ -253,7 +255,7 @@ namespace zappy {
         auto expected = "deplacement: 7";
 
         my_tcp::Client client;
-        Player expulsor(client.getSession(), worldSize, pos_0_0, expulsorOrientation);
+        Player expulsor(client.getSession(), worldSize, pos_5_5, expulsorOrientation);
 
         action.trigger(expulsor, "", "", *game);
         ASSERT_TRUE(expulsor.isBusy()); while (expulsor.isBusy()) expulsor.updateCmdTimeout(duration);
@@ -271,7 +273,7 @@ namespace zappy {
         auto expected = "deplacement: 7";
 
         my_tcp::Client client;
-        Player expulsor(client.getSession(), worldSize, pos_0_0, expulsorOrientation);
+        Player expulsor(client.getSession(), worldSize, pos_5_5, expulsorOrientation);
 
         action.trigger(expulsor, "", "", *game);
         ASSERT_TRUE(expulsor.isBusy()); while (expulsor.isBusy()) expulsor.updateCmdTimeout(duration);
@@ -288,7 +290,7 @@ namespace zappy {
         auto expected = "deplacement: 1";
 
         my_tcp::Client client;
-        Player expulsor(client.getSession(), worldSize, pos_0_0, expulsorOrientation);
+        Player expulsor(client.getSession(), worldSize, pos_5_5, expulsorOrientation);
 
         action.trigger(expulsor, "", "", *game);
         ASSERT_TRUE(expulsor.isBusy()); while (expulsor.isBusy()) expulsor.updateCmdTimeout(duration);
@@ -305,7 +307,7 @@ namespace zappy {
         auto expected = "deplacement: 3";
 
         my_tcp::Client client;
-        Player expulsor(client.getSession(), worldSize, pos_0_0, expulsorOrientation);
+        Player expulsor(client.getSession(), worldSize, pos_5_5, expulsorOrientation);
 
         action.trigger(expulsor, "", "", *game);
         ASSERT_TRUE(expulsor.isBusy()); while (expulsor.isBusy()) expulsor.updateCmdTimeout(duration);
@@ -322,7 +324,7 @@ namespace zappy {
         auto expected = "deplacement: 5";
 
         my_tcp::Client client;
-        Player expulsor(client.getSession(), worldSize, pos_0_0, expulsorOrientation);
+        Player expulsor(client.getSession(), worldSize, pos_5_5, expulsorOrientation);
 
         action.trigger(expulsor, "", "", *game);
         ASSERT_TRUE(expulsor.isBusy()); while (expulsor.isBusy()) expulsor.updateCmdTimeout(duration);
