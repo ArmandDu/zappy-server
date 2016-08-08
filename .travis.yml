@@ -58,6 +58,5 @@ script:
   - mkdir build
   - cd build
   - cmake -DCMAKE_CXX_COMPILER=$COMPILER -DCMAKE_BUILD_TYPE=Release  ../
-  - cd ..
-  - cmake --build build/ --target runUnitTests -- -j 4
+  - cmake --build ./ --target runUnitTests -- -j 4
   - ./runUnitTests --gtest_filter=* --gtest_color=no
