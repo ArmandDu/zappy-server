@@ -40,10 +40,6 @@ matrix:
             - clang-3.7
       env: COMPILER=clang++-3.7
 
-    - env:
-      - BUILD_TYPE=Release
-      - BUILD_TYPE=Debug
-
 before_install:
   - sudo apt-get update -qq
 
@@ -61,6 +57,13 @@ before_script:
 script:
   - mkdir release
   - cd release
-  - cmake -DCMAKE_CXX_COMPILER=$COMPILER -DCMAKE_BUILD_TYPE=$BUILD_TYPE  ../
+  - cmake -DCMAKE_CXX_COMPILER=$COMPILER -DCMAKE_BUILD_TYPE=Release  ../
+  - cmake --build ./ --target runUnitTests -- -j 4
+  - ./runUnitTests --gtest_filter=* --gtest_color=no
+
+  - cd ${TRAVIS_BUILD_DIR}
+  - mkdir debug
+  - cd debug
+  - cmake -DCMAKE_CXX_COMPILER=$COMPILER -DCMAKE_BUILD_TYPE=Debug  ../
   - cmake --build ./ --target runUnitTests -- -j 4
   - ./runUnitTests --gtest_filter=* --gtest_color=no
