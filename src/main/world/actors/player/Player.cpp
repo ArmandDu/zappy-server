@@ -83,6 +83,7 @@ namespace zappy {
                                                                              size_(size),
                                                                              position_(position),
                                                                              orientation_(orientation),
+                                                                             incanting_(false),
                                                                              level_(1),
                                                                              dead_(false) {
     }
